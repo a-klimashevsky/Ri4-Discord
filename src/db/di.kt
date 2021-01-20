@@ -1,0 +1,22 @@
+package tv.z85.domain.db
+
+import com.mongodb.ConnectionString
+import com.mongodb.reactivestreams.client.MongoClient
+import org.koin.dsl.module
+import org.litote.kmongo.coroutine.CoroutineDatabase
+import org.litote.kmongo.coroutine.coroutine
+import org.litote.kmongo.reactivestreams.KMongo
+
+val dbModule = module {
+    single { ConnectionString("mongodb://localhost") }
+    single<MongoClient> {
+        val connectionString: ConnectionString = get()
+        KMongo.createClient(connectionString)
+    }
+
+    single<CoroutineDatabase> {
+        val client: MongoClient = get()
+        client.coroutine.getDatabase("ri4-discord")
+    }
+
+}
