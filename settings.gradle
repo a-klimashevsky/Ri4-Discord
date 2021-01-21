@@ -1,2 +1,2 @@
-rootProject.name = "discord"
-include ':api-client', ':discord'
+rootProject.name = "app"
+include ':api-client', ':app'

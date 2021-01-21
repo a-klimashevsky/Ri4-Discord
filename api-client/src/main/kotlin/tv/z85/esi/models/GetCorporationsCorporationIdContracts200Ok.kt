@@ -114,10 +114,10 @@ data class GetCorporationsCorporationIdContracts200Ok (
     */
     
     enum class Availability(val value: kotlin.String){
-        @Json(name = "public") public("public"),
-        @Json(name = "personal") personal("personal"),
-        @Json(name = "corporation") corporation("corporation"),
-        @Json(name = "alliance") alliance("alliance");
+        @Json(name = "public") Public("public"),
+        @Json(name = "personal") Personal("personal"),
+        @Json(name = "corporation") Corporation("corporation"),
+        @Json(name = "alliance") Alliance("alliance");
     }
     /**
     * Status of the the contract

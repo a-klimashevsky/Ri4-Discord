@@ -4,7 +4,6 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import tv.z85.domain.sde.update.UpdateInventoryItemsTask
 import tv.z85.domain.sde.update.UpdateInventoryNamesTask
-import tv.z85.domain.sde.update.UpdateTask
 import tv.z85.domain.sde.yaml.*
 
 

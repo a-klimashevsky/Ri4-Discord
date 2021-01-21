@@ -50,8 +50,8 @@ data class GetCorporationsCorporationIdMedalsIssued200Ok (
     */
     
     enum class Status(val value: kotlin.String){
-        @Json(name = "private") private("private"),
-        @Json(name = "public") public("public");
+        @Json(name = "private") Private("private"),
+        @Json(name = "public") Public("public");
     }
 }
 

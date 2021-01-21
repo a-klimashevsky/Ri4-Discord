@@ -63,8 +63,8 @@ data class GetCharactersCharacterIdMedals200Ok (
     */
     
     enum class Status(val value: kotlin.String){
-        @Json(name = "public") public("public"),
-        @Json(name = "private") private("private");
+        @Json(name = "public") Public("public"),
+        @Json(name = "private") Private("private");
     }
 }
 

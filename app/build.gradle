@@ -47,9 +47,11 @@ dependencies {
 
     implementation "org.koin:koin-ktor:2.2.2"
 
-    implementation("org.litote.kmongo:kmongo-coroutine-serialization:4.2.3")
+    implementation "org.litote.kmongo:kmongo-coroutine-serialization:4.2.3"
 
     implementation "com.charleskorn.kaml:kaml:0.26.0"
+
+    implementation project(":api-client")
 
     testImplementation "io.ktor:ktor-server-tests:$ktor_version"
 
