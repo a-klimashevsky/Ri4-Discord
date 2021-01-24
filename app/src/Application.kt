@@ -24,6 +24,7 @@ import tv.z85.domain.VerificationInfo
 import tv.z85.domain.db.dbModule
 import tv.z85.domain.sde.SdeUpdateTask
 import tv.z85.domain.sde.sdeModule
+import tv.z85.esi.gatewaysModule
 import tv.z85.network.networkModule
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
@@ -87,6 +88,7 @@ fun Application.module(testing: Boolean = false) {
     install(Koin) {
         modules(sdeModule)
         modules(dbModule)
+        modules(gatewaysModule)
         modules(networkModule)
     }
 

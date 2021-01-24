@@ -10,7 +10,7 @@ import java.io.FileInputStream
 
 abstract class BaseYamlFileReader<T>(
     private val fileName: String,
-): YamlFileReader<T> {
+) : YamlFileReader<T> {
 
     protected abstract fun serializer(): DeserializationStrategy<T>
 

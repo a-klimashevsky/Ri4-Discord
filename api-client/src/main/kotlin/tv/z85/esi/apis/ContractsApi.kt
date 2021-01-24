@@ -11,33 +11,6 @@
 */
 package tv.z85.esi.apis
 
-import tv.z85.esi.models.BadRequest
-import tv.z85.esi.models.ErrorLimited
-import tv.z85.esi.models.Forbidden
-import tv.z85.esi.models.GatewayTimeout
-import tv.z85.esi.models.GetCharactersCharacterIdContracts200Ok
-import tv.z85.esi.models.GetCharactersCharacterIdContractsContractIdBids200Ok
-import tv.z85.esi.models.GetCharactersCharacterIdContractsContractIdBidsNotFound
-import tv.z85.esi.models.GetCharactersCharacterIdContractsContractIdItems200Ok
-import tv.z85.esi.models.GetCharactersCharacterIdContractsContractIdItemsNotFound
-import tv.z85.esi.models.GetContractsPublicBidsContractId200Ok
-import tv.z85.esi.models.GetContractsPublicBidsContractIdForbidden
-import tv.z85.esi.models.GetContractsPublicBidsContractIdNotFound
-import tv.z85.esi.models.GetContractsPublicItemsContractId200Ok
-import tv.z85.esi.models.GetContractsPublicItemsContractIdForbidden
-import tv.z85.esi.models.GetContractsPublicItemsContractIdNotFound
-import tv.z85.esi.models.GetContractsPublicRegionId200Ok
-import tv.z85.esi.models.GetContractsPublicRegionIdNotFound
-import tv.z85.esi.models.GetCorporationsCorporationIdContracts200Ok
-import tv.z85.esi.models.GetCorporationsCorporationIdContractsContractIdBids200Ok
-import tv.z85.esi.models.GetCorporationsCorporationIdContractsContractIdBidsNotFound
-import tv.z85.esi.models.GetCorporationsCorporationIdContractsContractIdItems200Ok
-import tv.z85.esi.models.GetCorporationsCorporationIdContractsContractIdItemsError520
-import tv.z85.esi.models.GetCorporationsCorporationIdContractsContractIdItemsNotFound
-import tv.z85.esi.models.InternalServerError
-import tv.z85.esi.models.ServiceUnavailable
-import tv.z85.esi.models.Unauthorized
-
 import tv.z85.esi.infrastructure.ApiClient
 import tv.z85.esi.infrastructure.ClientException
 import tv.z85.esi.infrastructure.ClientError
@@ -49,6 +22,8 @@ import tv.z85.esi.infrastructure.RequestMethod
 import tv.z85.esi.infrastructure.ResponseType
 import tv.z85.esi.infrastructure.Success
 import tv.z85.esi.infrastructure.toMultiValue
+import tv.z85.esi.models.*
+import java.lang.Integer.parseInt
 
 class ContractsApi(basePath: kotlin.String = defaultBasePath) : ApiClient(basePath) {
     companion object {
@@ -391,7 +366,7 @@ class ContractsApi(basePath: kotlin.String = defaultBasePath) : ApiClient(basePa
     */
     @Suppress("UNCHECKED_CAST")
     @Throws(UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    fun getCorporationsCorporationIdContracts(corporationId: kotlin.Int, datasource: kotlin.String?, ifMinusNoneMinusMatch: kotlin.String?, page: kotlin.Int?, token: kotlin.String?) : kotlin.Array<GetCorporationsCorporationIdContracts200Ok> {
+    fun getCorporationsCorporationIdContracts(corporationId: kotlin.Int, datasource: kotlin.String?, ifMinusNoneMinusMatch: kotlin.String?, page: kotlin.Int?, token: kotlin.String?) : Paged<Array<GetCorporationsCorporationIdContracts200Ok>> {
         val localVariableBody: kotlin.Any? = null
         val localVariableQuery: MultiValueMap = mutableMapOf<kotlin.String, List<kotlin.String>>()
             .apply {
@@ -417,8 +392,13 @@ class ContractsApi(basePath: kotlin.String = defaultBasePath) : ApiClient(basePa
             localVariableBody
         )
 
+        val pageCount = parseInt(localVarResponse.headers["X-Pages"]?.first())
+
         return when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as kotlin.Array<GetCorporationsCorporationIdContracts200Ok>
+            ResponseType.Success ->Paged(
+                data = (localVarResponse as Success<*>).data as Array<GetCorporationsCorporationIdContracts200Ok>,
+                pageCount = pageCount
+            )
             ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
             ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
             ResponseType.ClientError -> {

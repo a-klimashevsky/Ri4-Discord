@@ -2,13 +2,14 @@ package tv.z85.domain.sde.yaml
 
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.builtins.ListSerializer
+import tv.z85.domain.sde.InventoryName
 
 
 class InvNamesFileReader(
     fileName: String,
-) : BaseYamlFileReader<List<InventoryNameYaml>>(fileName) {
+) : BaseYamlFileReader<List<InventoryName>>(fileName) {
 
-    override fun serializer(): DeserializationStrategy<List<InventoryNameYaml>> {
-        return ListSerializer(InventoryNameYaml.serializer())
+    override fun serializer(): DeserializationStrategy<List<InventoryName>> {
+        return ListSerializer(buildSerializerFor(InventoryName::class.java))
     }
 }

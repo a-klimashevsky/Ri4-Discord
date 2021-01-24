@@ -10,23 +10,11 @@ import tv.z85.domain.sde.yaml.InventoryItemYaml
 import tv.z85.domain.sde.yaml.YamlFileReader
 
 class UpdateInventoryItemsTask(
-    private val fileReader: YamlFileReader<List<InventoryItemYaml>>,
+    private val fileReader: YamlFileReader<List<InventoryItem>>,
     private val database: CoroutineDatabase
 ) : UpdateTask {
     override fun update(): Flow<Unit> {
         return fileReader.read()
-            .map {
-                it.map {
-                    InventoryItem(
-                        flagID = it.flagID,
-                        itemID = it.itemID,
-                        locationID = it.locationID,
-                        ownerID = it.ownerID,
-                        quantity = it.quantity,
-                        typeID = it.typeID
-                    )
-                }
-            }
             .flatMapConcat {
                 flow{
                     emit(database.getCollection<InventoryItem>().insertMany(it))

@@ -9,9 +9,9 @@ import tv.z85.domain.sde.yaml.*
 
 val sdeModule = module {
 
-    single<YamlFileReader<List<InventoryItemYaml>>>(named("InvItemsFileReader")) { InvItemsFileReader("./.sde_cache/bsd/invItems.yaml") }
+    single<YamlFileReader<List<InventoryItem>>>(named("InvItemsFileReader")) { InvItemsFileReader("./.sde_cache/bsd/invItems.yaml") }
 
-    single<YamlFileReader<List<InventoryNameYaml>>>(named("InvNamesFileReader")) { InvNamesFileReader("./.sde_cache/bsd/invNames.yaml") }
+    single<YamlFileReader<List<InventoryName>>>(named("InvNamesFileReader")) { InvNamesFileReader("./.sde_cache/bsd/invNames.yaml") }
 
     single {
         UpdateInventoryItemsTask(get(named("InvItemsFileReader")), get())
