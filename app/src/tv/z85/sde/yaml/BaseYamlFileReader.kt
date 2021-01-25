@@ -1,10 +1,9 @@
-package tv.z85.domain.sde.yaml
+package tv.z85.sde.yaml
 
 import com.charleskorn.kaml.Yaml
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.DeserializationStrategy
-import tv.z85.domain.sde.readAllAsFlow
 import java.io.FileInputStream
 
 

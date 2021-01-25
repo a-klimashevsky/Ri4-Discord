@@ -2,9 +2,14 @@ package tv.z85.domain.sde
 
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
-import tv.z85.domain.sde.update.UpdateInventoryItemsTask
-import tv.z85.domain.sde.update.UpdateInventoryNamesTask
-import tv.z85.domain.sde.yaml.*
+import tv.z85.sde.update.UpdateInventoryItemsTask
+import tv.z85.sde.update.UpdateInventoryNamesTask
+import tv.z85.sde.InventoryItem
+import tv.z85.sde.InventoryName
+import tv.z85.sde.SdeUpdateTask
+import tv.z85.sde.yaml.InvItemsFileReader
+import tv.z85.sde.yaml.InvNamesFileReader
+import tv.z85.sde.yaml.YamlFileReader
 
 
 val sdeModule = module {

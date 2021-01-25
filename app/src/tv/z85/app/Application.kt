@@ -1,4 +1,4 @@
-package tv.z85
+package tv.z85.app
 
 import io.ktor.application.*
 import io.ktor.auth.*
@@ -21,11 +21,15 @@ import org.slf4j.event.Level
 import tv.z85.domain.AuthApi
 import tv.z85.domain.Authorization
 import tv.z85.domain.VerificationInfo
-import tv.z85.domain.db.dbModule
-import tv.z85.domain.sde.SdeUpdateTask
+import tv.z85.db.dbModule
+import tv.z85.domain.CorporationContractsRepository
+import tv.z85.sde.SdeUpdateTask
 import tv.z85.domain.sde.sdeModule
 import tv.z85.esi.gatewaysModule
 import tv.z85.network.networkModule
+import tv.z85.usecases.GetSoldCorporationContractsForPeriodUseCase
+import tv.z85.usecases.useCaseModule
+import kotlin.time.ExperimentalTime
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -47,6 +51,7 @@ val loginProviders = listOf(
     ),
 ).associateBy { it.name }
 
+@ExperimentalTime
 @Suppress("unused") // Referenced in application.conf
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
@@ -85,19 +90,34 @@ fun Application.module(testing: Boolean = false) {
         anyHost() // @TODO: Don't do this in production if possible. Try to limit it.
     }
 
+    val config = config()
+
     install(Koin) {
+        modules(buildApplicationModule(config))
         modules(sdeModule)
         modules(dbModule)
         modules(gatewaysModule)
         modules(networkModule)
+        modules(useCaseModule)
     }
 
     val updateTask: SdeUpdateTask by inject()
 
     val database: CoroutineDatabase by inject()
 
+    val contractsRepo: CorporationContractsRepository by inject()
+
+    val useCase: GetSoldCorporationContractsForPeriodUseCase by inject()
+
     launch {
-        updateTask.update().collect {  }
+
+        useCase.invoke(config.corporationId, config.peridoInDays).collect {
+            val c = it.count()
+        }
+        //updateTask.update().collect {  }
+//        contractsRepo.getAll(config.corporationId).collect {
+//            val c = it.count()
+//        }
     }
 
     val authClient = HttpClient(Apache).apply {

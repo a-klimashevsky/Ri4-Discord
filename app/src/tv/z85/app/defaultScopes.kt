@@ -1,4 +1,4 @@
-package tv.z85
+package tv.z85.app
 
 val defaultScopes = listOf(
     "publicData",

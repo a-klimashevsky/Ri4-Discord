@@ -1,4 +1,4 @@
-package tv.z85.domain.sde
+package tv.z85.sde
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

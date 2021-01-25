@@ -392,13 +392,16 @@ class ContractsApi(basePath: kotlin.String = defaultBasePath) : ApiClient(basePa
             localVariableBody
         )
 
-        val pageCount = parseInt(localVarResponse.headers["X-Pages"]?.first())
+
 
         return when (localVarResponse.responseType) {
-            ResponseType.Success ->Paged(
-                data = (localVarResponse as Success<*>).data as Array<GetCorporationsCorporationIdContracts200Ok>,
-                pageCount = pageCount
-            )
+            ResponseType.Success -> {
+                val pageCount = parseInt(localVarResponse.headers["X-Pages"]?.first())
+                Paged(
+                    data = (localVarResponse as Success<*>).data as Array<GetCorporationsCorporationIdContracts200Ok>,
+                    pageCount = pageCount
+                )
+            }
             ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
             ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
             ResponseType.ClientError -> {

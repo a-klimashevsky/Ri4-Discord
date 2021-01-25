@@ -1,8 +1,6 @@
 package tv.z85.tv.z85.esi
 
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flatMapConcat
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.*
 import tv.z85.domain.Contract
 import tv.z85.domain.CorporationContractsRepository
 import tv.z85.esi.apis.ContractsApi
@@ -13,6 +11,7 @@ class CorporationContractsRepositoryImpl(
     private val getAuthTokenUseCase: GetAuthTokenUseCase,
     private val api: ContractsApi,
 ) : CorporationContractsRepository {
+
     override fun getAll(corporationId: Int): Flow<List<Contract>> {
         return getAuthTokenUseCase.invoke()
             .flatMapConcat { token ->

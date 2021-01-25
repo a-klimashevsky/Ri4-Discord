@@ -1,4 +1,4 @@
-package tv.z85.domain.sde
+package tv.z85.sde
 
 import kotlinx.coroutines.flow.Flow
 
