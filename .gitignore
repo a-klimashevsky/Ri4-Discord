@@ -6,3 +6,4 @@
 *.ipr
 *.iws
 /api-client/.openapi-generator-ignore
+/app/.env.local

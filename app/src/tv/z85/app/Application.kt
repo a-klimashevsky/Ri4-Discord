@@ -16,8 +16,13 @@ import kotlinx.coroutines.launch
 import kotlinx.html.*
 import org.koin.ktor.ext.Koin
 import org.koin.ktor.ext.inject
+import org.koin.ktor.ext.modules
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.slf4j.event.Level
+import tv.z85.app.controllers.contracts.sold.statistics.ContractsController
+import tv.z85.app.controllers.controllersModule
+import tv.z85.app.renderers.discord.SoldContractsRenderer
+import tv.z85.app.renderers.renderersModule
 import tv.z85.domain.AuthApi
 import tv.z85.domain.Authorization
 import tv.z85.domain.VerificationInfo
@@ -26,9 +31,11 @@ import tv.z85.domain.CorporationContractsRepository
 import tv.z85.sde.SdeUpdateTask
 import tv.z85.domain.sde.sdeModule
 import tv.z85.esi.gatewaysModule
-import tv.z85.network.networkModule
+import tv.z85.network.buildNetworkModule
 import tv.z85.usecases.GetSoldCorporationContractsForPeriodUseCase
+import tv.z85.usecases.GetSoldCorporationContractsStatisticsUseCase
 import tv.z85.usecases.useCaseModule
+import tv.z85.web.Webhook
 import kotlin.time.ExperimentalTime
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
@@ -97,22 +104,24 @@ fun Application.module(testing: Boolean = false) {
         modules(sdeModule)
         modules(dbModule)
         modules(gatewaysModule)
-        modules(networkModule)
+        modules(buildNetworkModule(config))
         modules(useCaseModule)
+        modules(controllersModule)
+        modules(renderersModule)
     }
 
     val updateTask: SdeUpdateTask by inject()
 
     val database: CoroutineDatabase by inject()
 
-    val contractsRepo: CorporationContractsRepository by inject()
+    val webhook: Webhook by inject()
 
-    val useCase: GetSoldCorporationContractsForPeriodUseCase by inject()
+    val renderer: SoldContractsRenderer by inject()
 
     launch {
 
-        useCase.invoke(config.corporationId, config.peridoInDays).collect {
-            val c = it.count()
+        renderer.render().collect {
+            webhook.send(it)
         }
         //updateTask.update().collect {  }
 //        contractsRepo.getAll(config.corporationId).collect {

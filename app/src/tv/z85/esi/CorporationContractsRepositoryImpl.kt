@@ -1,25 +1,24 @@
 package tv.z85.tv.z85.esi
 
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import tv.z85.domain.Contract
 import tv.z85.domain.CorporationContractsRepository
+import tv.z85.esi.BaseAuthorizedEsiRepository
 import tv.z85.esi.apis.ContractsApi
-import tv.z85.usecases.AuthToken
 import tv.z85.usecases.GetAuthTokenUseCase
 
 class CorporationContractsRepositoryImpl(
     private val getAuthTokenUseCase: GetAuthTokenUseCase,
     private val api: ContractsApi,
-) : CorporationContractsRepository {
+) : CorporationContractsRepository, BaseAuthorizedEsiRepository<List<Contract>>(getAuthTokenUseCase) {
 
-    override fun getAll(corporationId: Int): Flow<List<Contract>> {
-        return getAuthTokenUseCase.invoke()
-            .flatMapConcat { token ->
-                fetchContract(token, corporationId)
-            }
-    }
+    override fun getAll(corporationId: Int): Flow<List<Contract>> =
+        withAuth { token ->
+            fetchContracts(token, corporationId)
+        }
 
-    private fun fetchContract(token: AuthToken, corporationId: Int): Flow<List<Contract>> {
+    private fun fetchContracts(token: String, corporationId: Int): Flow<List<Contract>> {
         return flow {
             val result = mutableListOf<Contract>()
 
@@ -28,7 +27,7 @@ class CorporationContractsRepositoryImpl(
                 datasource = null,
                 ifMinusNoneMinusMatch = null,
                 page = 1,
-                token = token.token
+                token = token
             )
 
             val pageCount = apiResponse.pageCount
@@ -41,7 +40,7 @@ class CorporationContractsRepositoryImpl(
                     datasource = null,
                     ifMinusNoneMinusMatch = null,
                     page = i,
-                    token = token.token
+                    token = token
                 )
 
                 result.addAll(apiResponse.data.map { it.map() })

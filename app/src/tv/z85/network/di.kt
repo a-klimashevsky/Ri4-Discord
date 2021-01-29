@@ -1,10 +1,29 @@
 package tv.z85.network
 
 import io.ktor.client.*
-import io.ktor.client.engine.jetty.*
+import io.ktor.client.engine.apache.*
+import io.ktor.client.features.json.*
+import io.ktor.client.features.json.serializer.*
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
-import java.util.*;
+import tv.z85.app.ApplicationConfig
+import tv.z85.web.Webhook
 
-val networkModule = module {
-    single<HttpClient> { HttpClient(Jetty) }
+fun buildNetworkModule(config: ApplicationConfig) = module {
+
+    single(named("my_hook")) {
+        config.discordWebhookUrl
+    }
+
+    single<HttpClient> {
+        HttpClient(Apache) {
+            install(JsonFeature) {
+                serializer = KotlinxSerializer()
+            }
+        }
+    }
+
+    single<Webhook> {
+        Webhook(get(named("my_hook")),get())
+    }
 }
