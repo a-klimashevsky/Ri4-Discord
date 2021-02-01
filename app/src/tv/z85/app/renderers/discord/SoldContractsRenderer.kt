@@ -7,8 +7,8 @@ import tv.z85.app.controllers.contracts.sold.statistics.ContractsController
 import tv.z85.app.controllers.contracts.sold.statistics.ViewModel
 
 
-interface SoldContractsRenderer {
-    fun render(): Flow<String>
+interface SoldContractsRenderer : DiscordMessageRenderer {
+    //fun render(): Flow<String>
 }
 
 class SoldContractsRendererImpl(

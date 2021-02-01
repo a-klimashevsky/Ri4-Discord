@@ -1,8 +1,15 @@
 package tv.z85
 
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.isActive
 import java.util.*;
+import kotlin.concurrent.fixedRateTimer
+import kotlin.concurrent.schedule
+import kotlin.concurrent.scheduleAtFixedRate
 
 fun <T> Flow<T>.toList(): Flow<List<T>> = flow {
     val list = this@toList.toList(mutableListOf())
@@ -31,3 +38,23 @@ fun <S, R:S,T> Flow<T>.mapReduce(mapper: suspend (T)-> R, reducer: suspend (accu
         emit(this@mapReduce.map(mapper).reduce(reducer))
     }
 
+ @ExperimentalCoroutinesApi
+ fun schedule(
+    time: Date,
+    period: Long,
+    timer: Timer = Timer()
+): Flow<Unit> = callbackFlow {
+     timer.scheduleAtFixedRate(
+         time = time,
+         period = period,
+         action = {
+             if(!isActive){
+                 timer.cancel()
+             } else {
+                 offer(Unit)
+             }
+         }
+     )
+
+     awaitClose { timer.cancel() }
+}

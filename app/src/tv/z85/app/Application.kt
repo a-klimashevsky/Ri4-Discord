@@ -11,7 +11,6 @@ import io.ktor.locations.*
 import io.ktor.request.*
 import io.ktor.routing.*
 import io.ktor.serialization.*
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.html.*
@@ -20,19 +19,18 @@ import org.koin.ktor.ext.inject
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.slf4j.event.Level
 import tv.z85.app.controllers.controllersModule
-import tv.z85.app.renderers.discord.SoldContractsRenderer
+import tv.z85.app.notifications.NotificationCollector
+import tv.z85.app.notifications.notificationModule
 import tv.z85.app.renderers.renderersModule
 import tv.z85.db.dbModule
-import tv.z85.network.AuthApi
 import tv.z85.domain.Authorization
 import tv.z85.domain.VerificationInfo
 import tv.z85.domain.sde.sdeModule
 import tv.z85.esi.gatewaysModule
-import tv.z85.esi.infrastructure.ClientException
+import tv.z85.network.AuthApi
 import tv.z85.network.buildNetworkModule
 import tv.z85.sde.SdeUpdateTask
 import tv.z85.usecases.useCaseModule
-import tv.z85.web.Webhook
 import kotlin.time.ExperimentalTime
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
@@ -105,35 +103,17 @@ fun Application.module(testing: Boolean = false) {
         modules(useCaseModule)
         modules(controllersModule)
         modules(renderersModule)
+        modules(notificationModule)
     }
-
-    val updateTask: SdeUpdateTask by inject()
 
     val database: CoroutineDatabase by inject()
 
-    val webhook: Webhook by inject()
+    val updateTask: SdeUpdateTask by inject()
 
-    val renderer: SoldContractsRenderer by inject()
+    val collector: NotificationCollector by inject()
 
     launch {
-
-        renderer.render()
-            .catch { e ->
-                when (e) {
-                    is ClientException -> when(e.statusCode){
-                        HttpStatusCode.Forbidden.value -> TODO()
-
-                    }
-                }
-                throw e
-            }
-            .collect {
-            webhook.send(it)
-        }
-        //updateTask.update().collect {  }
-//        contractsRepo.getAll(config.corporationId).collect {
-//            val c = it.count()
-//        }
+        collector.start().collect{}
     }
 
     val authClient = HttpClient(Apache).apply {
