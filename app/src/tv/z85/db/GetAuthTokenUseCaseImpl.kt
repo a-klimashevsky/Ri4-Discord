@@ -18,6 +18,6 @@ class GetAuthTokenUseCaseImpl(
                     .findOne()
             )
         }
-            .map { AuthToken(it!!.accessToken) }
+            .map { AuthToken(it!!.accessToken, it!!.refreshToken) }
     }
 }

@@ -6,12 +6,14 @@ import tv.z85.domain.CorporationStructuresRepository
 import tv.z85.domain.Structure
 import tv.z85.esi.apis.UniverseApi
 import tv.z85.usecases.GetAuthTokenUseCase
+import tv.z85.usecases.ReAuthUseCase
 
 
 class CorporationStructuresRepositoryImpl(
     getAuthTokenUseCase: GetAuthTokenUseCase,
+    reAuthUseCase: ReAuthUseCase,
     private val api: UniverseApi
-) : CorporationStructuresRepository, BaseAuthorizedEsiRepository<Structure>(getAuthTokenUseCase) {
+) : CorporationStructuresRepository, BaseAuthorizedEsiRepository<Structure>(getAuthTokenUseCase, reAuthUseCase) {
 
     override fun getById(id: Long): Flow<Structure> =
         withAuth { token ->

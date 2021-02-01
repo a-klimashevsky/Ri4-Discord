@@ -7,6 +7,7 @@ import io.ktor.client.features.json.serializer.*
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import tv.z85.app.ApplicationConfig
+import tv.z85.usecases.ReAuthUseCase
 import tv.z85.web.Webhook
 
 fun buildNetworkModule(config: ApplicationConfig) = module {
@@ -24,6 +25,19 @@ fun buildNetworkModule(config: ApplicationConfig) = module {
     }
 
     single<Webhook> {
-        Webhook(get(named("my_hook")),get())
+        Webhook(get(named("my_hook")), get())
+    }
+
+    single<AuthApi> {
+        AuthApi()
+    }
+
+    single<ReAuthUseCase> {
+        ReAuthUseCaseImpl(
+            api = get(),
+            repo = get(),
+            clientId = config.clientId,
+            clientSecret = config.clientSecret
+        )
     }
 }

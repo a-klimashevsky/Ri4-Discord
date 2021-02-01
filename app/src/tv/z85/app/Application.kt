@@ -11,29 +11,26 @@ import io.ktor.locations.*
 import io.ktor.request.*
 import io.ktor.routing.*
 import io.ktor.serialization.*
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.html.*
 import org.koin.ktor.ext.Koin
 import org.koin.ktor.ext.inject
-import org.koin.ktor.ext.modules
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.slf4j.event.Level
-import tv.z85.app.controllers.contracts.sold.statistics.ContractsController
 import tv.z85.app.controllers.controllersModule
 import tv.z85.app.renderers.discord.SoldContractsRenderer
 import tv.z85.app.renderers.renderersModule
-import tv.z85.domain.AuthApi
+import tv.z85.db.dbModule
+import tv.z85.network.AuthApi
 import tv.z85.domain.Authorization
 import tv.z85.domain.VerificationInfo
-import tv.z85.db.dbModule
-import tv.z85.domain.CorporationContractsRepository
-import tv.z85.sde.SdeUpdateTask
 import tv.z85.domain.sde.sdeModule
 import tv.z85.esi.gatewaysModule
+import tv.z85.esi.infrastructure.ClientException
 import tv.z85.network.buildNetworkModule
-import tv.z85.usecases.GetSoldCorporationContractsForPeriodUseCase
-import tv.z85.usecases.GetSoldCorporationContractsStatisticsUseCase
+import tv.z85.sde.SdeUpdateTask
 import tv.z85.usecases.useCaseModule
 import tv.z85.web.Webhook
 import kotlin.time.ExperimentalTime
@@ -120,7 +117,17 @@ fun Application.module(testing: Boolean = false) {
 
     launch {
 
-        renderer.render().collect {
+        renderer.render()
+            .catch { e ->
+                when (e) {
+                    is ClientException -> when(e.statusCode){
+                        HttpStatusCode.Forbidden.value -> TODO()
+
+                    }
+                }
+                throw e
+            }
+            .collect {
             webhook.send(it)
         }
         //updateTask.update().collect {  }
@@ -182,7 +189,7 @@ fun Application.module(testing: Boolean = false) {
                             accessToken = principal.accessToken,
                             tokenType = principal.tokenType,
                             expiresIn = principal.expiresIn,
-                            refreshToken = principal.refreshToken
+                            refreshToken = principal.refreshToken!!
                         )
 
                         database.getCollection<Authorization>()

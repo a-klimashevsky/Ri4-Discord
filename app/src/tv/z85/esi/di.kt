@@ -15,7 +15,7 @@ val gatewaysModule = module {
     single<UniverseApi> { UniverseApi() }
     single<CorporationApi> { CorporationApi() }
 
-    single<CorporationContractsRepository> { CorporationContractsRepositoryImpl(get(), get()) }
-    single<CorporationStructuresRepository> { CorporationStructuresRepositoryImpl(get(),get()) }
+    single<CorporationContractsRepository> { CorporationContractsRepositoryImpl(get(), get(), get()) }
+    single<CorporationStructuresRepository> { CorporationStructuresRepositoryImpl(get(),get(),get()) }
     single<CorporationInfoRepository> { GetCorporationInfoRepositoryImpl(get()) }
 }

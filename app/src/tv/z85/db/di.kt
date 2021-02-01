@@ -6,7 +6,7 @@ import org.koin.dsl.module
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.litote.kmongo.coroutine.coroutine
 import org.litote.kmongo.reactivestreams.KMongo
-import tv.z85.db.GetAuthTokenUseCaseImpl
+import tv.z85.domain.AuthorizationRepository
 import tv.z85.usecases.GetAuthTokenUseCase
 
 val dbModule = module {
@@ -23,4 +23,5 @@ val dbModule = module {
 
     single<GetAuthTokenUseCase> { GetAuthTokenUseCaseImpl(get()) }
 
+    single<AuthorizationRepository> { AuthorizationRepositoryImpl(get()) }
 }

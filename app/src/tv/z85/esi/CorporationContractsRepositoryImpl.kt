@@ -7,11 +7,13 @@ import tv.z85.domain.CorporationContractsRepository
 import tv.z85.esi.BaseAuthorizedEsiRepository
 import tv.z85.esi.apis.ContractsApi
 import tv.z85.usecases.GetAuthTokenUseCase
+import tv.z85.usecases.ReAuthUseCase
 
 class CorporationContractsRepositoryImpl(
-    private val getAuthTokenUseCase: GetAuthTokenUseCase,
+      getAuthTokenUseCase: GetAuthTokenUseCase,
+      reAuthUseCase: ReAuthUseCase,
     private val api: ContractsApi,
-) : CorporationContractsRepository, BaseAuthorizedEsiRepository<List<Contract>>(getAuthTokenUseCase) {
+) : CorporationContractsRepository, BaseAuthorizedEsiRepository<List<Contract>>(getAuthTokenUseCase, reAuthUseCase) {
 
     override fun getAll(corporationId: Int): Flow<List<Contract>> =
         withAuth { token ->

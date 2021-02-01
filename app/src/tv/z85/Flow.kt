@@ -30,3 +30,4 @@ fun <S, R:S,T> Flow<T>.mapReduce(mapper: suspend (T)-> R, reducer: suspend (accu
     flow{
         emit(this@mapReduce.map(mapper).reduce(reducer))
     }
+
