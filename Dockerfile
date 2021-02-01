@@ -13,7 +13,7 @@ RUN chown -R $APPLICATION_USER /app
 USER $APPLICATION_USER
 
 # We copy the FAT Jar we built into the /app folder and sets that folder as the working directory.
-COPY ./build/libs/app-0.0.1.jar /app/my-application.jar
+COPY app/build/libs/app-0.0.1.jar /app/my-application.jar
 WORKDIR /app
 
 # We launch java to execute the jar, with good defauls intended for containers.
