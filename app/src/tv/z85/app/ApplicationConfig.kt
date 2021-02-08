@@ -8,6 +8,7 @@ data class ApplicationConfig(
     val discordWebhookUrl: String,
     val clientId: String,
     val clientSecret: String,
+    val cacheFolder: String
 ) {
 
 }
@@ -18,5 +19,6 @@ fun Application.config(): ApplicationConfig {
     val discordWebhookUrl = Config.requireProperty("app.discordWebhookUrl")
     val clientId = Config.requireProperty("app.clientId")
     val clientSecret = Config.requireProperty("app.clientSecret")
-    return ApplicationConfig(corporationId, periodInDays, discordWebhookUrl, clientId, clientSecret)
+    val cacheFolder = Config.requireProperty("app.cacheFolder")
+    return ApplicationConfig(corporationId, periodInDays, discordWebhookUrl, clientId, clientSecret, cacheFolder)
 }

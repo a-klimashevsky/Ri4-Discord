@@ -10,7 +10,7 @@ import tv.z85.domain.AuthorizationRepository
 import tv.z85.usecases.GetAuthTokenUseCase
 
 val dbModule = module {
-    single { ConnectionString("mongodb://localhost") }
+    single { ConnectionString("mongodb://mongo") }
     single<MongoClient> {
         val connectionString: ConnectionString = get()
         KMongo.createClient(connectionString)

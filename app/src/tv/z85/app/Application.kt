@@ -12,6 +12,7 @@ import io.ktor.request.*
 import io.ktor.routing.*
 import io.ktor.serialization.*
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.launch
 import kotlinx.html.*
 import org.koin.ktor.ext.Koin
@@ -25,7 +26,7 @@ import tv.z85.app.renderers.renderersModule
 import tv.z85.db.dbModule
 import tv.z85.domain.Authorization
 import tv.z85.domain.VerificationInfo
-import tv.z85.domain.sde.sdeModule
+import tv.z85.domain.sde.buildSdeModule
 import tv.z85.esi.gatewaysModule
 import tv.z85.network.AuthApi
 import tv.z85.network.buildNetworkModule
@@ -41,17 +42,6 @@ class index()
 @Location("/login/{type?}")
 class login(val type: String = "")
 
-val loginProviders = listOf(
-    OAuthServerSettings.OAuth2ServerSettings(
-        name = "eve",
-        authorizeUrl = "https://login.eveonline.com/oauth/authorize",
-        accessTokenUrl = "https://login.eveonline.com/oauth/token",
-        clientId = "54271cc976e94c988935b1d76e8819c0",
-        clientSecret = "ce5GnvreahMANH9LFb1okxKTwDlaVishJiGxlml3",
-        defaultScopes = defaultScopes,
-        requestMethod = HttpMethod.Post
-    ),
-).associateBy { it.name }
 
 @ExperimentalTime
 @Suppress("unused") // Referenced in application.conf
@@ -94,9 +84,21 @@ fun Application.module(testing: Boolean = false) {
 
     val config = config()
 
+    val loginProviders = listOf(
+        OAuthServerSettings.OAuth2ServerSettings(
+            name = "eve",
+            authorizeUrl = "https://login.eveonline.com/oauth/authorize",
+            accessTokenUrl = "https://login.eveonline.com/oauth/token",
+            clientId = config.clientId,
+            clientSecret = config.clientSecret,
+            defaultScopes = defaultScopes,
+            requestMethod = HttpMethod.Post
+        ),
+    ).associateBy { it.name }
+
     install(Koin) {
         modules(buildApplicationModule(config))
-        modules(sdeModule)
+        modules(buildSdeModule(config.cacheFolder))
         modules(dbModule)
         modules(gatewaysModule)
         modules(buildNetworkModule(config))
@@ -113,7 +115,10 @@ fun Application.module(testing: Boolean = false) {
     val collector: NotificationCollector by inject()
 
     launch {
-        collector.start().collect{}
+        updateTask.update().flatMapConcat {
+            collector.start()
+        }
+        .collect{}
     }
 
     val authClient = HttpClient(Apache).apply {
@@ -177,7 +182,7 @@ fun Application.module(testing: Boolean = false) {
 
                         call.loggedInSuccessResponse(user)
                     } else {
-                        call.loginPage()
+                        call.loginPage(loginProviders)
                     }
                 }
             }
@@ -185,7 +190,7 @@ fun Application.module(testing: Boolean = false) {
     }
 }
 
-private suspend fun ApplicationCall.loginPage() {
+private suspend fun ApplicationCall.loginPage(loginProviders: Map<String, OAuthServerSettings.OAuth2ServerSettings>) {
     respondHtml {
         head {
             title { +"Login with" }

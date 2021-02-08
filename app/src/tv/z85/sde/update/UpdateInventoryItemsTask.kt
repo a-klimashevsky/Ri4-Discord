@@ -14,9 +14,14 @@ class UpdateInventoryItemsTask(
 ) : UpdateTask {
     override fun update(): Flow<Unit> {
         return fileReader.read()
-            .flatMapConcat {
+            .flatMapConcat { list ->
                 flow{
-                    emit(database.getCollection<InventoryItem>().insertMany(it))
+                    emit(database.getCollection<InventoryItem>().drop())
+
+                }.flatMapConcat {
+                    flow{
+                        emit(database.getCollection<InventoryItem>().insertMany(list))
+                    }
                 }
             }
             .map {  }

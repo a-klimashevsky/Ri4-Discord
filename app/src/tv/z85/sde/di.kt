@@ -12,11 +12,11 @@ import tv.z85.sde.yaml.InvNamesFileReader
 import tv.z85.sde.yaml.YamlFileReader
 
 
-val sdeModule = module {
+fun buildSdeModule(cacheFolder: String) = module {
 
-    single<YamlFileReader<List<InventoryItem>>>(named("InvItemsFileReader")) { InvItemsFileReader("./.sde_cache/bsd/invItems.yaml") }
+    single<YamlFileReader<List<InventoryItem>>>(named("InvItemsFileReader")) { InvItemsFileReader("${cacheFolder}/bsd/invItems.yaml") }
 
-    single<YamlFileReader<List<InventoryName>>>(named("InvNamesFileReader")) { InvNamesFileReader("./.sde_cache/bsd/invNames.yaml") }
+    single<YamlFileReader<List<InventoryName>>>(named("InvNamesFileReader")) { InvNamesFileReader("${cacheFolder}/bsd/invNames.yaml") }
 
     single {
         UpdateInventoryItemsTask(get(named("InvItemsFileReader")), get())
