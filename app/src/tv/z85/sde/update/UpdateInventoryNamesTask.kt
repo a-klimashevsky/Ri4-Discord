@@ -17,12 +17,9 @@ class UpdateInventoryNamesTask(
         return fileReader.read()
             .flatMapConcat { list ->
                 flow {
-                    emit(database.getCollection<InventoryName>().drop())
+                    database.getCollection<InventoryName>().drop()
+                    emit(emit(database.getCollection<InventoryName>().insertMany(list)))
 
-                }.flatMapConcat {
-                    flow {
-                        emit(emit(database.getCollection<InventoryName>().insertMany(list)))
-                    }
                 }
             }
             .map { }

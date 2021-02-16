@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import tv.z85.app.renderers.discord.SoldContractsRenderer
 import tv.z85.schedule
+import tv.z85.startWith
 import tv.z85.web.Webhook
 import java.time.Duration
 import java.util.*
@@ -23,7 +24,9 @@ class SoldContractNotification(
                 this.set(Calendar.MINUTE,0)
             }.time,
             Duration.ofDays(1).toMillis()
-        ).flatMapConcat {
+        )
+            .startWith(Unit)
+            .flatMapConcat {
             renderer.render()
         }.onEach {
             webhook.send(it)
