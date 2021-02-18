@@ -21,7 +21,7 @@ val dbModule = module {
         client.coroutine.getDatabase("ri4-discord")
     }
 
-    single<GetAuthTokenUseCase> { GetAuthTokenUseCaseImpl(get()) }
+    single<GetAuthTokenUseCase> { GetAuthTokenUseCaseImpl(get(), get()) }
 
-    single<AuthorizationRepository> { AuthorizationRepositoryImpl(get()) }
+    single<AuthorizationRepository> { AuthorizationRepositoryImpl(get(), get()) }
 }

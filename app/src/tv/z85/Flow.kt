@@ -58,3 +58,21 @@ fun schedule(
 
 fun <T> Flow<T>.startWith(value: T): Flow<T> = flowOf(value).onCompletion { emitAll(this@startWith) }
 
+fun <T, R> zip(
+    vararg flows: Flow<T>,
+    transform: suspend (List<T>) -> R
+): Flow<R> = when(flows.size) {
+    0 -> error("No flows")
+    1 -> flows[0].map{ transform(listOf(it)) }
+    2 -> flows[0].zip(flows[1]) { a, b -> transform(listOf(a, b)) }
+    else -> {
+        var accFlow: Flow<List<T>> = flows[0].zip(flows[1]) { a, b -> listOf(a, b) }
+        for (i in 2 until flows.size) {
+            accFlow = accFlow.zip(flows[i]) { list, it ->
+                list + it
+            }
+        }
+        accFlow.map(transform)
+    }
+}
+

@@ -5,7 +5,7 @@ import org.koin.dsl.module
 val useCaseModule = module {
 
     single<GetSoldCorporationContractsForPeriodUseCase> {
-        GetSoldCorporationContractsForPeriodUseCaseImpl(get())
+        GetSoldCorporationContractsForPeriodUseCaseImpl(get() ,get())
     }
 
     single<GetSoldCorporationContractsStatisticsUseCase> {

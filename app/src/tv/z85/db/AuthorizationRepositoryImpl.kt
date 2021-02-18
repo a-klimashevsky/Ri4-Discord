@@ -4,12 +4,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.litote.kmongo.eq
+import org.slf4j.Logger
 import tv.z85.domain.Authorization
 import tv.z85.domain.AuthorizationRepository
 
 
 class AuthorizationRepositoryImpl(
-    private val database: CoroutineDatabase
+    private val database: CoroutineDatabase,
+    private val log: Logger
 ) : AuthorizationRepository {
     override fun save(auth: Authorization): Flow<Unit> {
         return flow {
@@ -17,7 +19,9 @@ class AuthorizationRepositoryImpl(
                 .updateOne(
                     filter = Authorization::userId eq auth.userId,
                     target = auth
-                ).let { }
+                ).let {
+                    log.debug("R4: $auth saved!" )
+                }
             )
         }
     }

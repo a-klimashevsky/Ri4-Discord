@@ -5,7 +5,7 @@ import org.koin.dsl.module
 
 val notificationModule = module {
     single<DiscordNotification>(named("Sold")) {
-        SoldContractNotification(get(),get())
+        SoldContractNotification(get(),get(), get())
     }
 
     single<NotificationCollector> {

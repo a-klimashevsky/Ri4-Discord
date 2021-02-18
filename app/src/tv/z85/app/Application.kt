@@ -11,13 +11,16 @@ import io.ktor.locations.*
 import io.ktor.request.*
 import io.ktor.routing.*
 import io.ktor.serialization.*
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.html.*
 import org.koin.ktor.ext.Koin
 import org.koin.ktor.ext.inject
 import org.litote.kmongo.coroutine.CoroutineDatabase
+import org.slf4j.Logger
 import org.slf4j.event.Level
 import tv.z85.app.controllers.controllersModule
 import tv.z85.app.notifications.NotificationCollector
@@ -97,7 +100,7 @@ fun Application.module(testing: Boolean = false) {
     ).associateBy { it.name }
 
     install(Koin) {
-        modules(buildApplicationModule(config))
+        modules(buildApplicationModule(config, environment.log))
         modules(buildSdeModule(config.cacheFolder))
         modules(dbModule)
         modules(gatewaysModule)
@@ -114,10 +117,19 @@ fun Application.module(testing: Boolean = false) {
 
     val collector: NotificationCollector by inject()
 
+    val logger: Logger by inject()
+
     launch {
-        updateTask.update().flatMapConcat {
+        logger.debug("R4: updateTask started!")
+        updateTask.update()
+            .onEach {
+                logger.debug("R4: updateTask finished!")
+            }
+            //.catch {  }
+            .flatMapConcat {
             collector.start()
         }
+            .catch { e -> logger.error("R4",e) }
         .collect{}
     }
 

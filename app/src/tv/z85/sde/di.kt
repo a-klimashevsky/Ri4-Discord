@@ -7,6 +7,7 @@ import tv.z85.sde.update.UpdateInventoryNamesTask
 import tv.z85.sde.InventoryItem
 import tv.z85.sde.InventoryName
 import tv.z85.sde.SdeUpdateTask
+import tv.z85.sde.SdeUpdateTaskImpl
 import tv.z85.sde.yaml.InvItemsFileReader
 import tv.z85.sde.yaml.InvNamesFileReader
 import tv.z85.sde.yaml.YamlFileReader
@@ -14,16 +15,20 @@ import tv.z85.sde.yaml.YamlFileReader
 
 fun buildSdeModule(cacheFolder: String) = module {
 
-    single<YamlFileReader<List<InventoryItem>>>(named("InvItemsFileReader")) { InvItemsFileReader("${cacheFolder}/bsd/invItems.yaml") }
+    single<YamlFileReader<List<InventoryItem>>>(named("InvItemsFileReader")) {
+        InvItemsFileReader("${cacheFolder}/bsd/invItems.yaml")
+    }
 
-    single<YamlFileReader<List<InventoryName>>>(named("InvNamesFileReader")) { InvNamesFileReader("${cacheFolder}/bsd/invNames.yaml") }
-
-    single {
-        UpdateInventoryItemsTask(get(named("InvItemsFileReader")), get())
+    single<YamlFileReader<List<InventoryName>>>(named("InvNamesFileReader")) {
+        InvNamesFileReader("${cacheFolder}/bsd/invNames.yaml")
     }
 
     single {
-        UpdateInventoryNamesTask(get(named("InvNamesFileReader")), get())
+        UpdateInventoryItemsTask(get(named("InvItemsFileReader")), get(), get())
+    }
+
+    single {
+        UpdateInventoryNamesTask(get(named("InvNamesFileReader")), get(), get())
     }
 
     single<SdeUpdateTask> {

@@ -7,7 +7,6 @@ import tv.z85.domain.CorporationInfoRepository
 import tv.z85.esi.apis.ContractsApi
 import tv.z85.esi.apis.CorporationApi
 import tv.z85.esi.apis.UniverseApi
-import tv.z85.tv.z85.esi.CorporationContractsRepositoryImpl
 
 
 val gatewaysModule = module {
@@ -15,7 +14,7 @@ val gatewaysModule = module {
     single<UniverseApi> { UniverseApi() }
     single<CorporationApi> { CorporationApi() }
 
-    single<CorporationContractsRepository> { CorporationContractsRepositoryImpl(get(), get(), get()) }
+    single<CorporationContractsRepository> { CorporationContractsRepositoryImpl(get(), get(), get(), get()) }
     single<CorporationStructuresRepository> { CorporationStructuresRepositoryImpl(get(),get(),get()) }
-    single<CorporationInfoRepository> { GetCorporationInfoRepositoryImpl(get()) }
+    single<CorporationInfoRepository> { GetCorporationInfoRepositoryImpl(get(), get()) }
 }

@@ -2,6 +2,7 @@ package tv.z85.esi
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import org.slf4j.Logger
 import tv.z85.domain.CorporationInfo
 import tv.z85.domain.CorporationInfoRepository
 import tv.z85.esi.apis.CorporationApi
@@ -9,7 +10,8 @@ import tv.z85.esi.models.GetCorporationsCorporationIdOk
 
 
 class GetCorporationInfoRepositoryImpl(
-    private val api: CorporationApi
+    private val api: CorporationApi,
+    private val log: Logger
 ) : CorporationInfoRepository {
     override fun getById(id: Int): Flow<CorporationInfo> = flow {
         val response = api.getCorporationsCorporationId(
@@ -19,7 +21,7 @@ class GetCorporationInfoRepositoryImpl(
         )
 
         val info = response.map()
-
+        log.debug("R4, got corporation info $info")
         emit(info)
     }
 }
