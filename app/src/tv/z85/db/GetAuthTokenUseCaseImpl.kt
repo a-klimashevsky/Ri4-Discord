@@ -4,14 +4,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import org.litote.kmongo.coroutine.CoroutineDatabase
-import org.slf4j.Logger
+import tv.z85.Log
 import tv.z85.domain.Authorization
 import tv.z85.usecases.AuthToken
 import tv.z85.usecases.GetAuthTokenUseCase
 
 class GetAuthTokenUseCaseImpl(
     private val database: CoroutineDatabase,
-    private val log:Logger
 ) : GetAuthTokenUseCase {
     override fun invoke(): Flow<AuthToken> {
         return flow {
@@ -21,8 +20,8 @@ class GetAuthTokenUseCaseImpl(
             )
         }
             .map {
-                log.debug("R4: got auth token $it")
-                AuthToken(it!!.accessToken, it!!.refreshToken)
+                Log.debug("R4: got auth token $it")
+                AuthToken(it!!.accessToken, it.refreshToken)
             }
     }
 }

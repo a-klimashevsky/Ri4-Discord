@@ -20,8 +20,8 @@ import kotlinx.html.*
 import org.koin.ktor.ext.Koin
 import org.koin.ktor.ext.inject
 import org.litote.kmongo.coroutine.CoroutineDatabase
-import org.slf4j.Logger
 import org.slf4j.event.Level
+import tv.z85.Log
 import tv.z85.app.controllers.controllersModule
 import tv.z85.app.notifications.NotificationCollector
 import tv.z85.app.notifications.notificationModule
@@ -40,7 +40,7 @@ import kotlin.time.ExperimentalTime
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 @Location("/")
-class index()
+class index
 
 @Location("/login/{type?}")
 class login(val type: String = "")
@@ -50,6 +50,8 @@ class login(val type: String = "")
 @Suppress("unused") // Referenced in application.conf
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
+
+    Log = environment.log
 
     val authOauthForLogin = "authOauthForLogin"
 
@@ -100,7 +102,7 @@ fun Application.module(testing: Boolean = false) {
     ).associateBy { it.name }
 
     install(Koin) {
-        modules(buildApplicationModule(config, environment.log))
+        modules(buildApplicationModule(config))
         modules(buildSdeModule(config.cacheFolder))
         modules(dbModule)
         modules(gatewaysModule)
@@ -117,19 +119,17 @@ fun Application.module(testing: Boolean = false) {
 
     val collector: NotificationCollector by inject()
 
-    val logger: Logger by inject()
-
     launch {
-        logger.debug("R4: updateTask started!")
+        Log.debug("R4: updateTask started!")
         updateTask.update()
             .onEach {
-                logger.debug("R4: updateTask finished!")
+                Log.debug("R4: updateTask finished!")
             }
             //.catch {  }
             .flatMapConcat {
             collector.start()
         }
-            .catch { e -> logger.error("R4",e) }
+            .catch { e -> Log.error("R4",e) }
         .collect{}
     }
 
@@ -169,7 +169,7 @@ fun Application.module(testing: Boolean = false) {
         }
 
         authenticate(authOauthForLogin) {
-            location<login>() {
+            location<login> {
                 param("error") {
                     handle {
                         call.loginFailedPage(call.parameters.getAll("error").orEmpty())
@@ -259,7 +259,7 @@ private suspend fun ApplicationCall.loggedInSuccessResponse(callback: Verificati
 }
 
 private fun <T : Any> ApplicationCall.redirectUrl(t: T, secure: Boolean = true): String {
-    val hostPort = request.host()!! + request.port().let { port -> if (port == 80) "" else ":$port" }
+    val hostPort = request.host() + request.port().let { port -> if (port == 80) "" else ":$port" }
     val protocol = when {
         secure -> "https"
         else -> "http"

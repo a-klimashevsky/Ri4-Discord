@@ -3,7 +3,7 @@ package tv.z85.esi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
-import org.slf4j.Logger
+import tv.z85.Log
 import tv.z85.domain.Contract
 import tv.z85.domain.CorporationContractsRepository
 import tv.z85.esi.apis.ContractsApi
@@ -15,7 +15,6 @@ class CorporationContractsRepositoryImpl(
     getAuthTokenUseCase: GetAuthTokenUseCase,
     reAuthUseCase: ReAuthUseCase,
     private val api: ContractsApi,
-    private val log: Logger
 ) : CorporationContractsRepository, BaseAuthorizedEsiRepository<List<Contract>>(getAuthTokenUseCase, reAuthUseCase) {
 
     override fun getAll(corporationId: Int): Flow<List<Contract>> =
@@ -26,7 +25,7 @@ class CorporationContractsRepositoryImpl(
     private fun fetchContracts(token: String, corporationId: Int): Flow<List<Contract>> {
         return flow {
 
-            log.debug("R4: start fetch contracts for $corporationId")
+            Log.debug("R4: start fetch contracts for $corporationId")
 
             val result = mutableListOf<Contract>()
 
@@ -40,7 +39,7 @@ class CorporationContractsRepositoryImpl(
 
             val pageCount = apiResponse.pageCount
 
-            log.debug("R4: contracts pages $pageCount")
+            Log.debug("R4: contracts pages $pageCount")
 
             result.addAll(apiResponse.data.map { it.map() })
 
@@ -59,7 +58,7 @@ class CorporationContractsRepositoryImpl(
             emit(result)
         }
             .catch { e ->
-                log.error("R4:", e)
+                Log.error("R4:", e)
                 throw e
             }
     }

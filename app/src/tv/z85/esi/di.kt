@@ -2,8 +2,8 @@ package tv.z85.esi
 
 import org.koin.dsl.module
 import tv.z85.domain.CorporationContractsRepository
-import tv.z85.domain.CorporationStructuresRepository
 import tv.z85.domain.CorporationInfoRepository
+import tv.z85.domain.CorporationStructuresRepository
 import tv.z85.esi.apis.ContractsApi
 import tv.z85.esi.apis.CorporationApi
 import tv.z85.esi.apis.UniverseApi
@@ -14,7 +14,7 @@ val gatewaysModule = module {
     single<UniverseApi> { UniverseApi() }
     single<CorporationApi> { CorporationApi() }
 
-    single<CorporationContractsRepository> { CorporationContractsRepositoryImpl(get(), get(), get(), get()) }
+    single<CorporationContractsRepository> { CorporationContractsRepositoryImpl(get(), get(), get()) }
     single<CorporationStructuresRepository> { CorporationStructuresRepositoryImpl(get(),get(),get()) }
-    single<CorporationInfoRepository> { GetCorporationInfoRepositoryImpl(get(), get()) }
+    single<CorporationInfoRepository> { GetCorporationInfoRepositoryImpl(get()) }
 }

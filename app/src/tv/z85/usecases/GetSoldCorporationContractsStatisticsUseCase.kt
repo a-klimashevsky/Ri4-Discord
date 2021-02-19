@@ -34,14 +34,17 @@ class GetSoldCorporationContractsStatisticsUseCaseImpl(
             .groupBy { it.startLocationId }
             .flatMapConcat { contractsByPlace ->
                 groupByLocation(contractsByPlace)
-                    .zip(getLocationName(contractsByPlace.key ?: 0L)){
-                        a,b ->a.mapKeys { b }
+                    .zip(getLocationName(contractsByPlace.key ?: 0L)) { a, b ->
+                        a.mapKeys { b }
                     }
-            }
+                    .onEach {
+                        Log.debug("R4: one station contracts is $it")
+                    }
+            }.mapReduce({ it }, { a, b -> a.mergeWith(b) })
 
     }
 
-    private fun getLocationName(id: Long): Flow<String>{
+    private fun getLocationName(id: Long): Flow<String> {
         return getLocationNameUseCase.invoke(id)
     }
 

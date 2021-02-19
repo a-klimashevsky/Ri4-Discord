@@ -13,10 +13,16 @@ fun <T> Flow<T>.toList(): Flow<List<T>> = flow {
     emit(list)
 }
 
-fun <K, T> Flow<T>.groupBy(keySelector: (T) -> K): Flow<GroupedFlow<T, K>> = flow {
+fun <K, T> Flow<T>.groupBy(keySelector: (T) -> K): Flow<GroupedFlow<T, K>> =  channelFlow {
     val storage = mutableMapOf<K, MutableList<T>>()
-    collect { t -> storage.getOrPut(keySelector(t)) { mutableListOf() } += t }
-    storage.forEach { (k, ts) -> emit(GroupedFlow(k, ts.asFlow())) }
+
+    this@groupBy
+        .onCompletion {
+            storage.forEach { (k, ts) -> send(GroupedFlow(k, ts.asFlow())) }
+        }
+        .collect {
+            t -> storage.getOrPut(keySelector(t)) { mutableListOf() } += t
+    }
 }
 
 class GroupedFlow<T, K>(
