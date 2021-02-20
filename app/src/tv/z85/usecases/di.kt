@@ -9,7 +9,7 @@ val useCaseModule = module {
     }
 
     single<GetSoldCorporationContractsStatisticsUseCase> {
-        GetSoldCorporationContractsStatisticsUseCaseImpl(get(),get())
+        GetSoldCorporationContractsStatisticsUseCaseImpl(get(), get())
     }
 
     single<GetLocationNameUseCase> {
@@ -18,5 +18,13 @@ val useCaseModule = module {
 
     single<GetCorporationInfoUseCase> {
         GetCorporationInfoUseCaseImpl(get())
+    }
+
+    single<GetOutgoingCorporationContractsForPeriodUseCase> {
+        GetOutgoingCorporationContractsForPeriodUseCaseImpl(get())
+    }
+
+    single<GetOutgoingCorporationContractsStatisticsUseCase> {
+        GetOutgoingCorporationContractsStatisticsUseCaseImpl(get(),get())
     }
 }

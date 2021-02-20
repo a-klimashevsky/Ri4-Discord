@@ -1,10 +1,11 @@
 package tv.z85.sde.update
 
+import com.mongodb.client.result.InsertManyResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import org.litote.kmongo.coroutine.CoroutineDatabase
-import tv.z85.Log
 import tv.z85.sde.InventoryItem
 import tv.z85.sde.yaml.YamlFileReader
 
@@ -15,12 +16,10 @@ class UpdateInventoryItemsTask(
     override fun update(): Flow<Unit> {
         return fileReader.read()
             .flatMapConcat { list ->
-                flow{
+                flow<InsertManyResult>{
                     database.getCollection<InventoryItem>().drop()
                     emit(database.getCollection<InventoryItem>().insertMany(list))
-                    Log.debug("R4: UpdateInventoryItemsTask finished!")
                 }
-            }
-            .map {  }
+            }.map {  }
     }
 }
