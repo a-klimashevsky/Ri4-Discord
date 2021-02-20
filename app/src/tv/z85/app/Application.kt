@@ -26,7 +26,7 @@ import tv.z85.app.controllers.controllersModule
 import tv.z85.app.notifications.NotificationCollector
 import tv.z85.app.notifications.notificationModule
 import tv.z85.app.renderers.renderersModule
-import tv.z85.db.dbModule
+import tv.z85.db.buildDbModule
 import tv.z85.domain.Authorization
 import tv.z85.domain.VerificationInfo
 import tv.z85.domain.sde.buildSdeModule
@@ -104,7 +104,7 @@ fun Application.module(testing: Boolean = false) {
     install(Koin) {
         modules(buildApplicationModule(config))
         modules(buildSdeModule(config.cacheFolder))
-        modules(dbModule)
+        modules(buildDbModule(config))
         modules(gatewaysModule)
         modules(buildNetworkModule(config))
         modules(useCaseModule)
