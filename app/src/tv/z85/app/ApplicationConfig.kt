@@ -8,10 +8,10 @@ data class ApplicationConfig(
     val discordWebhookUrl: String,
     val clientId: String,
     val clientSecret: String,
-    val cacheFolder: String
-) {
-
-}
+    val cacheFolder: String,
+    val dbConnectionString: String,
+    val databaseName: String
+)
 
 fun Application.config(): ApplicationConfig {
     val corporationId = Config.requireProperty("app.corporationId").toInt()
@@ -20,5 +20,16 @@ fun Application.config(): ApplicationConfig {
     val clientId = Config.requireProperty("app.clientId")
     val clientSecret = Config.requireProperty("app.clientSecret")
     val cacheFolder = Config.requireProperty("app.cacheFolder")
-    return ApplicationConfig(corporationId, periodInDays, discordWebhookUrl, clientId, clientSecret, cacheFolder)
+    val dbConnectionString = Config.requireProperty("app.dbConnectionString")
+    val databaseName = Config.requireProperty("app.databaseName")
+    return ApplicationConfig(
+        corporationId,
+        periodInDays,
+        discordWebhookUrl,
+        clientId,
+        clientSecret,
+        cacheFolder,
+        dbConnectionString,
+        databaseName
+    )
 }
