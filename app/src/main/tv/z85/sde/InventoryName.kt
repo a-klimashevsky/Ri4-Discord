@@ -2,7 +2,6 @@ package tv.z85.sde
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import java.util.*;
 
 @Serializable
 data class InventoryName(

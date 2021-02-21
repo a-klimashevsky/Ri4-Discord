@@ -1,6 +1,6 @@
 package tv.z85.sde
 
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
 import tv.z85.sde.update.UpdateTask
 import tv.z85.zip
 
