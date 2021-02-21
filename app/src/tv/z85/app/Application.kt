@@ -29,6 +29,7 @@ import tv.z85.app.renderers.renderersModule
 import tv.z85.db.buildDbModule
 import tv.z85.domain.Authorization
 import tv.z85.domain.VerificationInfo
+import tv.z85.domain.domainModule
 import tv.z85.domain.sde.buildSdeModule
 import tv.z85.esi.gatewaysModule
 import tv.z85.network.AuthApi
@@ -111,6 +112,7 @@ fun Application.module(testing: Boolean = false) {
         modules(controllersModule)
         modules(renderersModule)
         modules(notificationModule)
+        modules(domainModule)
     }
 
     val database: CoroutineDatabase by inject()

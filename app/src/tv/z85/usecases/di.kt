@@ -2,11 +2,12 @@ package tv.z85.usecases
 
 import org.koin.dsl.module
 
-val useCaseModule = module {
+import tv.z85.usecases.contracts.statistics.GetOutgoingCorporationContractsStatisticsUseCase
+import tv.z85.usecases.contracts.statistics.GetOutgoingCorporationContractsStatisticsUseCaseImpl
+import tv.z85.usecases.contracts.statistics.GetSoldCorporationContractsStatisticsUseCase
+import tv.z85.usecases.contracts.statistics.GetSoldCorporationContractsStatisticsUseCaseImpl
 
-    single<GetSoldCorporationContractsForPeriodUseCase> {
-        GetSoldCorporationContractsForPeriodUseCaseImpl(get())
-    }
+val useCaseModule = module {
 
     single<GetSoldCorporationContractsStatisticsUseCase> {
         GetSoldCorporationContractsStatisticsUseCaseImpl(get(), get())
@@ -18,10 +19,6 @@ val useCaseModule = module {
 
     single<GetCorporationInfoUseCase> {
         GetCorporationInfoUseCaseImpl(get())
-    }
-
-    single<GetOutgoingCorporationContractsForPeriodUseCase> {
-        GetOutgoingCorporationContractsForPeriodUseCaseImpl(get())
     }
 
     single<GetOutgoingCorporationContractsStatisticsUseCase> {
