@@ -55,24 +55,3 @@ $yaml
         }
     }
 }
-
-/**
-corporation: R Initiative 4
-for period: 2
-Sold Contracts:
-W6V-VM - Delta After Dark - RIP Remdick:
-- [RI4] Sabre : 2 for 0.14kkk ISK
-Ashab - Tranquility Trade & Prod Center:
-- orca+fit+rigs: 1 for 1.27kkk ISK
-P4-3TJ - Goontown:
-- [RI4] Machariel CTA: 2 for 1.38kkk ISK
-- Cerb CTA Heavy: 3 for 0.93kkk ISK
-- [RI4] Scimitar CTA: 1 for 0.30kkk ISK
-- RI4 Scimitar CTA: 1 for 0.30kkk ISK
-Outgoing Contracts:
-W6V-VM - Delta After Dark - RIP Remdick:
-- [RI4] Machariel CTA: 3 for 2.06kkk ISK
-- [RI4] Sabre : 1 for 0.07kkk ISK
-BX-VEX - Two Titans. Every Hangar.:
-- TEST CONTRACT. PLEASE IGNORE: 1 for 1.00kkk ISK
-        **/
