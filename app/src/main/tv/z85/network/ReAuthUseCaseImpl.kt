@@ -7,7 +7,6 @@ import tv.z85.domain.Authorization
 import tv.z85.domain.AuthorizationRepository
 import tv.z85.usecases.AuthToken
 import tv.z85.usecases.ReAuthUseCase
-import java.util.*;
 
 
 class ReAuthUseCaseImpl(
@@ -32,7 +31,7 @@ class ReAuthUseCaseImpl(
                 accessToken = apiAuth.accessToken,
                 tokenType = apiAuth.tokenType,
                 expiresIn = apiAuth.expiresIn,
-                refreshToken = apiAuth.refreshToken!!
+                refreshToken = apiAuth.refreshToken
             )
 
             repo.save(auth).collect {

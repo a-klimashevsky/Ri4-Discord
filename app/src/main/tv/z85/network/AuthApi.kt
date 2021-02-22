@@ -1,7 +1,6 @@
 package tv.z85.network
 
 import com.squareup.moshi.Json
-import io.ktor.auth.*
 import io.ktor.http.*
 import io.ktor.http.auth.*
 import tv.z85.domain.VerificationInfo

@@ -1,7 +1,6 @@
 package tv.z85.domain
 
 import com.squareup.moshi.Json
-import java.util.*;
 
 data class VerificationInfo (
     @Json(name = "CharacterID")
