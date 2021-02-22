@@ -1,8 +1,13 @@
 package tv.z85.yaml
 
 open class SequenceYamlNode(
-    private val style: Style
+    var style: Style
 ) : ContainerYamlNode() {
+
+    @YamlTagMarker
+    inline infix fun String.to_seq(crossinline block: SequenceYamlNode.() -> Unit) {
+        add(MappingYamlNode(this, SequenceYamlNode(Style.Block).apply(block)))
+    }
 
     override fun dump(builder: StringBuilder, indent: String, skipFirstIndent: Boolean) {
         for (item in items) {
