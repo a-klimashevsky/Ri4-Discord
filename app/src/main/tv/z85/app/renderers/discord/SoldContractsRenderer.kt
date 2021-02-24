@@ -7,9 +7,7 @@ import tv.z85.yaml.Style
 import tv.z85.yaml.yaml
 
 
-interface SoldContractsRenderer : DiscordMessageRenderer {
-    //fun render(): Flow<String>
-}
+interface SoldContractsRenderer : DiscordMessageRenderer
 
 class SoldContractsRendererImpl(
     private val controller: ContractsController

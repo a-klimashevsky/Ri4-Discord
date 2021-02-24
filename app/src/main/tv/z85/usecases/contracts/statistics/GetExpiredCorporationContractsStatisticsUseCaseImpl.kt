@@ -8,14 +8,11 @@ import tv.z85.domain.GroupedContractStatistic
 import tv.z85.usecases.GetLocationNameUseCase
 import java.time.OffsetDateTime
 
-class GetOutgoingCorporationContractsStatisticsUseCaseImpl(
+class GetExpiredCorporationContractsStatisticsUseCaseImpl(
     private val repo: CorporationContractsRepository,
     private val getLocationNameUseCase: GetLocationNameUseCase,
-) : GetOutgoingCorporationContractsStatisticsUseCase {
-
-    override fun invoke(
-        corporationId: Int,
-    ): Flow<GroupedContractStatistic> {
+) : GetExpiredCorporationContractsStatisticsUseCase {
+    override fun invoke(corporationId: Int): Flow<GroupedContractStatistic> {
 
         val now = OffsetDateTime.now()
 
@@ -23,7 +20,7 @@ class GetOutgoingCorporationContractsStatisticsUseCaseImpl(
             corporationId = corporationId,
             status = Contract.Status.Outstanding,
             type = Contract.Type.ItemExchange,
-        ).filter { it.dateExpired?.isAfter(now) ?: true }
+        ).filter { it.dateExpired?.isBefore(now) ?: false }
 
         val aggregator = CorporationContractStatsAggregator(
             source = source,
@@ -32,4 +29,5 @@ class GetOutgoingCorporationContractsStatisticsUseCaseImpl(
 
         return aggregator.statistics()
     }
+
 }

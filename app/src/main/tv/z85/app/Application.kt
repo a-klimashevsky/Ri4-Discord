@@ -127,7 +127,6 @@ fun Application.module(testing: Boolean = false) {
             .onEach {
                 Log.debug("R4: updateTask finished!")
             }
-            //.catch {  }
             .flatMapConcat {
             collector.start()
         }

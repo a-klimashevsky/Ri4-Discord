@@ -21,7 +21,7 @@ class ControllerImpl(
     override fun viewModel(): Flow<ViewModel> {
         return zip(
             getSoldCorporationContractsStatisticsUseCase.invoke(corporationId, periodInDays),
-            getOutgoingCorpContractsStatisticsUseCase.invoke(corporationId, periodInDays),
+            getOutgoingCorpContractsStatisticsUseCase.invoke(corporationId),
         ) { list ->
             Pair(list[0], list[1])
         }.zip(getCorporationInfoUseCase.invoke(corporationId)) { (sold, outgoing), corpInfo ->
