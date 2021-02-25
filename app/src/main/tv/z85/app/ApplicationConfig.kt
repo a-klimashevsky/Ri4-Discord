@@ -10,7 +10,10 @@ data class ApplicationConfig(
     val clientSecret: String,
     val cacheFolder: String,
     val dbConnectionString: String,
-    val databaseName: String
+    val databaseName: String,
+    val airbrakeProjectId: Int,
+    val airbrakeProjectKey: String,
+    val production : Boolean
 )
 
 fun Application.config(): ApplicationConfig {
@@ -22,6 +25,8 @@ fun Application.config(): ApplicationConfig {
     val cacheFolder = Config.requireProperty("app.cacheFolder")
     val dbConnectionString = Config.requireProperty("app.dbConnectionString")
     val databaseName = Config.requireProperty("app.databaseName")
+    val airbrakeProjectId = Config.requireProperty("app.airbrake.projectId").toInt()
+    val airbrakeProjectKey = Config.requireProperty("app.airbrake.projectKey")
     return ApplicationConfig(
         corporationId,
         periodInDays,
@@ -30,6 +35,9 @@ fun Application.config(): ApplicationConfig {
         clientSecret,
         cacheFolder,
         dbConnectionString,
-        databaseName
+        databaseName,
+        airbrakeProjectId,
+        airbrakeProjectKey,
+        production = !this.environment.developmentMode
     )
 }

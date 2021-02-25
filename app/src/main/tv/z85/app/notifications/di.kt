@@ -8,10 +8,15 @@ val notificationModule = module {
         SoldContractNotification(get(),get())
     }
 
+    single<DiscordNotification>(named("Expired")) {
+        ExpiredContractNotification(get(),get())
+    }
+
     single<NotificationCollector> {
         NotificationCollectorImpl(
             renderers = listOf(
-                get<DiscordNotification>(named("Sold"))
+                get<DiscordNotification>(named("Sold")),
+                get<DiscordNotification>(named("Expired"))
             )
         )
     }

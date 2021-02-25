@@ -4,8 +4,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.zip
 import tv.z85.app.controllers.Controller
 import tv.z85.usecases.GetCorporationInfoUseCase
-import tv.z85.usecases.GetOutgoingCorporationContractsStatisticsUseCase
-import tv.z85.usecases.GetSoldCorporationContractsStatisticsUseCase
+import tv.z85.usecases.contracts.statistics.GetOutgoingCorporationContractsStatisticsUseCase
+import tv.z85.usecases.contracts.statistics.GetSoldCorporationContractsStatisticsUseCase
 import tv.z85.zip
 
 
@@ -21,7 +21,7 @@ class ControllerImpl(
     override fun viewModel(): Flow<ViewModel> {
         return zip(
             getSoldCorporationContractsStatisticsUseCase.invoke(corporationId, periodInDays),
-            getOutgoingCorpContractsStatisticsUseCase.invoke(corporationId, periodInDays),
+            getOutgoingCorpContractsStatisticsUseCase.invoke(corporationId),
         ) { list ->
             Pair(list[0], list[1])
         }.zip(getCorporationInfoUseCase.invoke(corporationId)) { (sold, outgoing), corpInfo ->

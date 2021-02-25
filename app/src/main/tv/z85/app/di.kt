@@ -8,5 +8,6 @@ fun buildApplicationModule(config: ApplicationConfig): Module {
     return module {
         single(named("corporationId")) { config.corporationId }
         single(named("periodInDays")) { config.periodInDays }
+        single { config }
     }
 }
