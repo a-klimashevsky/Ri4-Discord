@@ -7,6 +7,7 @@ import io.ktor.client.features.json.serializer.*
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import tv.z85.app.ApplicationConfig
+import tv.z85.app.Logger
 import tv.z85.usecases.ReAuthUseCase
 import tv.z85.web.Webhook
 
@@ -39,5 +40,10 @@ fun buildNetworkModule(config: ApplicationConfig) = module {
             clientId = config.clientId,
             clientSecret = config.clientSecret
         )
+    }
+
+    single<Logger> {
+        val config: ApplicationConfig = get()
+        AirbrakeLogger(config.airbrakeProjectId, config.airbrakeProjectKey, config.production)
     }
 }

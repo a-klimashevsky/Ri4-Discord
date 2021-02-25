@@ -1,6 +1,5 @@
 package tv.z85.app
 
-import io.airbrake.javabrake.Notifier
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.client.*
@@ -52,16 +51,6 @@ class login(val type: String = "")
 @Suppress("unused") // Referenced in application.conf
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
-
-    val projectId = 324589
-    val projectKey = "4d41b938688cd0086f290ada3ca07b5a"
-    val notifier = Notifier(projectId, projectKey)
-
-    Thread.setDefaultUncaughtExceptionHandler { _, e ->
-        notifier.report(e)
-    }
-
-    val i = 1 / 0
 
     Log = environment.log
 
@@ -132,6 +121,8 @@ fun Application.module(testing: Boolean = false) {
 
     val collector: NotificationCollector by inject()
 
+    val logger: Logger by inject()
+
     launch {
         Log.debug("R4: updateTask started!")
         updateTask.update()
@@ -141,7 +132,7 @@ fun Application.module(testing: Boolean = false) {
             .flatMapConcat {
                 collector.start()
             }
-            .catch { e -> notifier.report(e) }
+            .catch { e -> logger.report(e) }
             .collect {}
     }
 
