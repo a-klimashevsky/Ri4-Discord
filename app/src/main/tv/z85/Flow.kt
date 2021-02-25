@@ -38,7 +38,13 @@ class GroupedFlow<T, K>(
 
 fun <S, R : S, T> Flow<T>.mapReduce(mapper: suspend (T) -> R, reducer: suspend (accumulator: S, value: R) -> S) =
     flow {
-        emit(this@mapReduce.map(mapper).reduce(reducer))
+        try {
+            val value = this@mapReduce.map(mapper).reduce(reducer)
+            emit(value)
+        } catch (e: NoSuchElementException) {
+            //TODO: may be another better work around
+        }
+
     }
 
 @ExperimentalCoroutinesApi
