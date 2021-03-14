@@ -16,9 +16,12 @@ class CorporationContractsServiceImpl(
 ) : CorporationContractsService, BaseAuthorizedEsiRepository<List<Contract>>(getAuthTokenUseCase, reAuthUseCase) {
 
     override fun getAll(corporationId: Int): Flow<List<Contract>> =
-        withAuth { token ->
-            fetchContracts(token, corporationId)
+        with504 {
+            withAuth { token ->
+                fetchContracts(token, corporationId)
+            }
         }
+
 
     private fun fetchContracts(token: String, corporationId: Int): Flow<List<Contract>> {
         return flow {
