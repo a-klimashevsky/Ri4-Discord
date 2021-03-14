@@ -16,24 +16,28 @@ class CorporationStructuresRepositoryImpl(
 ) : CorporationStructuresRepository, BaseAuthorizedEsiRepository<Structure>(getAuthTokenUseCase, reAuthUseCase) {
 
     override fun getById(id: Long): Flow<Structure> =
-        withAuth { token ->
-            flow {
-
-                val apiResult = api.getUniverseStructuresStructureId(
-                    structureId = id,
-                    token = token,
-                    datasource = null,
-                    ifMinusNoneMinusMatch = null
-                )
-
-                val structure = Structure(
-                    name = apiResult.name,
-                    ownerId = apiResult.ownerId,
-                    typeId = apiResult.typeId ?: 0,
-                    solarSystemId = apiResult.solarSystemId
-                )
-
-                emit(structure)
+        with504 {
+            withAuth { token ->
+                fetch(id, token)
             }
         }
+
+    private fun fetch(id: Long, token: String) = flow {
+
+        val apiResult = api.getUniverseStructuresStructureId(
+            structureId = id,
+            token = token,
+            datasource = null,
+            ifMinusNoneMinusMatch = null
+        )
+
+        val structure = Structure(
+            name = apiResult.name,
+            ownerId = apiResult.ownerId,
+            typeId = apiResult.typeId ?: 0,
+            solarSystemId = apiResult.solarSystemId
+        )
+
+        emit(structure)
+    }
 }

@@ -12,17 +12,20 @@ import tv.z85.esi.models.GetCorporationsCorporationIdOk
 class GetCorporationInfoRepositoryImpl(
     private val api: CorporationApi
 ) : CorporationInfoRepository {
-    override fun getById(id: Int): Flow<CorporationInfo> = flow {
-        val response = api.getCorporationsCorporationId(
-            corporationId = id,
-            datasource = null,
-            ifMinusNoneMinusMatch = null
-        )
+    override fun getById(id: Int): Flow<CorporationInfo> =
+        with504 {
+            flow {
+                val response = api.getCorporationsCorporationId(
+                    corporationId = id,
+                    datasource = null,
+                    ifMinusNoneMinusMatch = null
+                )
 
-        val info = response.map()
-        Log.debug("R4, got corporation info $info")
-        emit(info)
-    }
+                val info = response.map()
+                Log.debug("R4, got corporation info $info")
+                emit(info)
+            }
+        }
 }
 
 private fun GetCorporationsCorporationIdOk.map(): CorporationInfo =
